@@ -14,10 +14,16 @@ STATUS_FIELD = "status"
 TAGS_FIELD = "tags"
 
 STATUS_TODO = "TODO"
+STATUS_BLOCKED = "BLOCKED"
 STATUS_PLANNED = "PLANNED"
 STATUS_IN_PROGRESS = "IN PROGRESS"
 STATUS_IN_REVIEW = "IN REVIEW"
 STATUS_DONE = "DONE"
+
+WATCHED_STATUSES = [
+    STATUS_TODO, STATUS_BLOCKED, STATUS_PLANNED,
+    STATUS_IN_PROGRESS, STATUS_IN_REVIEW, STATUS_DONE
+]
 
 counter = 0
 
@@ -40,17 +46,12 @@ def get_rows_by_status(input_dict):
     Returns:
         (`dict`): Dictionary of `list` containing the split rows
     """
-    output_dict = {
-        STATUS_TODO: [],
-        STATUS_PLANNED: [],
-        STATUS_IN_PROGRESS: [],
-        STATUS_IN_REVIEW: [],
-        STATUS_DONE: [],
-    }
-    statuses = list(output_dict.keys())
+    output_dict = {}
+    for status in WATCHED_STATUSES:
+        output_dict[status] = []
     for row in input_dict:
         status = row[STATUS_FIELD].upper()
-        if status in statuses:
+        if status in WATCHED_STATUSES:
             output_dict[status].append(row)
 
     return output_dict
@@ -116,8 +117,7 @@ def prepare_report(input_dict):
     """
     report = ''
     urls = ''
-    statuses = [STATUS_DONE, STATUS_IN_REVIEW, STATUS_IN_PROGRESS, STATUS_PLANNED, STATUS_TODO]
-    for status in statuses:
+    for status in WATCHED_STATUSES:
         section, section_urls = prepare_section(input_dict[status])
         if section:
             report += "{}\n".format(status)
